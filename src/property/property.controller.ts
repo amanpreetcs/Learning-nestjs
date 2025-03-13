@@ -20,6 +20,8 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/role.guard';
+import { ApiAcceptedResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import { Property } from 'src/entities/property.entity';
 
 @Controller('property')
 export class PropertyController {
@@ -27,11 +29,17 @@ export class PropertyController {
   constructor(private propertyService: PropertyService) {}
 
   @Get()
+  @ApiAcceptedResponse({
+    type: [Property],
+  })
   async findAll(@Query() query: PaginationDto) {
     return await this.propertyService.findAll(query);
   }
 
   @Get(':id')
+  @ApiAcceptedResponse({
+    type: Property,
+  })
   async findOne(@Param('id', ParseIdPipe) id) {
     return await this.propertyService.findOne(id);
   }
@@ -41,17 +49,26 @@ export class PropertyController {
   @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @Post()
+  @ApiCreatedResponse({
+    type: Property,
+  })
   async create(@Body() body: CreatePropertyDto) {
     return await this.propertyService.create(body);
   }
 
   @Patch(':id')
+  @ApiCreatedResponse({
+    type: Property,
+  })
   @UsePipes(new ValidationPipe())
   async update(@Param('id', ParseIdPipe) id, @Body() body: UpdatePropertyDto) {
     return await this.propertyService.update(id, body);
   }
 
   @Delete(':id')
+  @ApiAcceptedResponse({
+    type: Boolean,
+  })
   async delete(@Param('id', ParseIdPipe) id) {
     return await this.propertyService.delete(id);
   }

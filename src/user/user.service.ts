@@ -17,8 +17,8 @@ export class UserService {
 
   findAll(query: PaginationDto) {
     return this.userRepo.find({
-      skip: query.skip,
-      take: query.limit,
+      skip: query?.skip ?? 0,
+      take: query?.limit ?? 10,
     });
   }
 
@@ -36,5 +36,21 @@ export class UserService {
 
   remove(id: number) {
     return this.userRepo.delete({ id });
+  }
+
+  getAllProperties(id) {
+    return this.userRepo.find({
+      where: {
+        id,
+      },
+      relations: {
+        properties: true,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
   }
 }
