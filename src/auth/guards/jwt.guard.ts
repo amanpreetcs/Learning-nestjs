@@ -12,14 +12,13 @@ export class JwtGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    const [type, token] = request.headers?.['access-token']?.split(' ') ?? [];
 
     if (type !== 'Bearer') {
       throw new UnauthorizedException('INVALID ACCESS TOKEN');
     }
 
     try {
-      //
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });

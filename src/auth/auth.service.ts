@@ -3,7 +3,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
 import { UserService } from 'src/user/user.service';
@@ -13,7 +12,6 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -33,12 +31,13 @@ export class AuthService {
       access_token: await this.jwtService.signAsync({
         sub: userId,
         role: user.role,
+        secret: process.env.JWT_SECRET,
       }),
       refresh_access_token: await this.jwtService.signAsync(
         { sub: userId },
         {
           expiresIn: '1d',
-          secret: this.configService.get('JWT_REFRESH_SECRET'),
+          secret: process.env.JWT_REFRESH_SECRET,
         },
       ),
     };

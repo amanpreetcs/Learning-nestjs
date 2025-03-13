@@ -20,7 +20,11 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/role.guard';
-import { ApiAcceptedResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import {
+  ApiAcceptedResponse,
+  ApiCreatedResponse,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { Property } from 'src/entities/property.entity';
 
 @Controller('property')
@@ -28,6 +32,12 @@ export class PropertyController {
   // this is dependency injection i.e. Nest js will inject the propertyService into this controller instead of creating a new instance by itself.
   constructor(private propertyService: PropertyService) {}
 
+  @ApiHeader({
+    name: 'access-token',
+    description: 'Access Token',
+    required: true,
+  })
+  @UseGuards(JwtGuard)
   @Get()
   @ApiAcceptedResponse({
     type: [Property],
@@ -36,6 +46,12 @@ export class PropertyController {
     return await this.propertyService.findAll(query);
   }
 
+  @ApiHeader({
+    name: 'access-token',
+    description: 'Access Token',
+    required: true,
+  })
+  @UseGuards(JwtGuard)
   @Get(':id')
   @ApiAcceptedResponse({
     type: Property,
@@ -44,6 +60,11 @@ export class PropertyController {
     return await this.propertyService.findOne(id);
   }
 
+  @ApiHeader({
+    name: 'access-token',
+    description: 'Access Token',
+    required: true,
+  })
   @UsePipes(new ValidationPipe())
   @Roles(Role.ADMIN, Role.CUSTOMER)
   @UseGuards(RolesGuard)
@@ -56,6 +77,12 @@ export class PropertyController {
     return await this.propertyService.create(body);
   }
 
+  @ApiHeader({
+    name: 'access-token',
+    description: 'Access Token',
+    required: true,
+  })
+  @UseGuards(JwtGuard)
   @Patch(':id')
   @ApiCreatedResponse({
     type: Property,
@@ -65,6 +92,12 @@ export class PropertyController {
     return await this.propertyService.update(id, body);
   }
 
+  @ApiHeader({
+    name: 'access-token',
+    description: 'Access Token',
+    required: true,
+  })
+  @UseGuards(JwtGuard)
   @Delete(':id')
   @ApiAcceptedResponse({
     type: Boolean,

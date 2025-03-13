@@ -12,8 +12,8 @@ import { JwtModule } from '@nestjs/jwt';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
       global: true,
-      secret: 'SJLFJSLADFDVKJOISJ()R)#U#OJOFJO)U()#@U)U#@ORJOJF@)J',
       signOptions: { expiresIn: '1h' },
+      secret: 'sldjflsdjflsjdfljslj32oruofsdjjsfljlslflsf',
     }),
   ],
   controllers: [AuthController],

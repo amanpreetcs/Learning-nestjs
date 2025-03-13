@@ -16,7 +16,7 @@ export class RefreshJwtGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const [type, token] = request.headers.refreshtoken?.split(' ') ?? [];
+    const [type, token] = request.headers?.['refresh-token']?.split(' ') ?? [];
 
     if (type !== 'Bearer') {
       throw new UnauthorizedException('INVALID REFRESH ACCESS TOKEN');
