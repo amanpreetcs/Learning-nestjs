@@ -18,7 +18,7 @@ export class CreatePropertyDto {
 
   @ApiProperty({
     description: 'Price of the property',
-    example: '$100000',
+    example: 100000,
   })
   @IsInt()
   price: number;

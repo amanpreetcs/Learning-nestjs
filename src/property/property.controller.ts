@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -24,6 +25,7 @@ import {
   ApiAcceptedResponse,
   ApiCreatedResponse,
   ApiHeader,
+  ApiParam,
 } from '@nestjs/swagger';
 import { Property } from 'src/entities/property.entity';
 
@@ -42,8 +44,9 @@ export class PropertyController {
   @ApiAcceptedResponse({
     type: [Property],
   })
-  async findAll(@Query() query: PaginationDto) {
-    return await this.propertyService.findAll(query);
+  async findAll(@Query() query: PaginationDto, @Request() req) {
+    const userId = req.user.sub;
+    return await this.propertyService.findAll(query, userId);
   }
 
   @ApiHeader({
@@ -56,8 +59,14 @@ export class PropertyController {
   @ApiAcceptedResponse({
     type: Property,
   })
-  async findOne(@Param('id', ParseIdPipe) id) {
-    return await this.propertyService.findOne(id);
+  @ApiParam({
+    name: 'id',
+    description: 'Property Id',
+    required: true,
+  })
+  async findOne(@Param('id', ParseIdPipe) id, @Request() req) {
+    const userId = req.user.sub;
+    return await this.propertyService.findOne(id, userId);
   }
 
   @ApiHeader({
@@ -73,13 +82,19 @@ export class PropertyController {
   @ApiCreatedResponse({
     type: Property,
   })
-  async create(@Body() body: CreatePropertyDto) {
-    return await this.propertyService.create(body);
+  async create(@Body() body: CreatePropertyDto, @Request() req) {
+    const userId = req.user.sub;
+    return await this.propertyService.create(body, userId);
   }
 
   @ApiHeader({
     name: 'access-token',
     description: 'Access Token',
+    required: true,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Property Id',
     required: true,
   })
   @UseGuards(JwtGuard)
@@ -88,8 +103,13 @@ export class PropertyController {
     type: Property,
   })
   @UsePipes(new ValidationPipe())
-  async update(@Param('id', ParseIdPipe) id, @Body() body: UpdatePropertyDto) {
-    return await this.propertyService.update(id, body);
+  async update(
+    @Param('id', ParseIdPipe) id,
+    @Body() body: UpdatePropertyDto,
+    @Request() req,
+  ) {
+    const userId = req.user.sub;
+    return await this.propertyService.update(id, body, userId);
   }
 
   @ApiHeader({
@@ -97,12 +117,18 @@ export class PropertyController {
     description: 'Access Token',
     required: true,
   })
+  @ApiParam({
+    name: 'id',
+    description: 'Property Id',
+    required: true,
+  })
   @UseGuards(JwtGuard)
   @Delete(':id')
   @ApiAcceptedResponse({
     type: Boolean,
   })
-  async delete(@Param('id', ParseIdPipe) id) {
-    return await this.propertyService.delete(id);
+  async delete(@Param('id', ParseIdPipe) id, @Request() req) {
+    const userId = req.user.sub;
+    return await this.propertyService.delete(id, userId);
   }
 }

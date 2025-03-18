@@ -10,4 +10,7 @@ export default (): PostgresConnectionOptions => ({
   port: 3306,
   entities: [Property, PropertyFeature, PropertyType, User],
   synchronize: true,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
